@@ -1,0 +1,38 @@
+name: ui-library
+
+inputs:
+  node_version:
+    default: 20
+
+
+runs:
+  using: "composite"
+  steps:
+     - uses: actions/checkout@v1
+
+     - name: Install UI-Library
+       if: ${{  github.event_name  == 'push'}}
+       run: |
+        git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }}  --depth 50
+       shell: bash
+     - name: Install PKP application for pull_request
+       if: ${{github.event_name  == 'pull_request'}}
+       run: |
+         git clone -b ${{ github.event.pull_request.head.ref}} ${{ github.event.pull_request.head.repo.html_url}} ~/${{ github.event.pull_request.head.repo.name }} --depth 50
+       shell: bash
+
+     - name: Configure node
+         sudo npm cache clean -f
+         sudo npm install -g n
+         sudo n  ${{github.node_version}} 
+         source ~/.bashrc
+       shell: bash
+
+     - name: Install dependencies
+       run: |
+         cd ~/${{github.event.pull_request.head.repo.name || github.event.repository.name  }}
+         npm install
+         npm run test
+       shell: bash
+
+
