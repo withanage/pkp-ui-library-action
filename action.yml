@@ -25,7 +25,7 @@ runs:
        run: |
          sudo npm cache clean -f
          sudo npm install -g n
-         sudo n  ${{github.node_version}} 
+         sudo n  ${{inputs.node_version}} 
          source ~/.bashrc
        shell: bash
 
