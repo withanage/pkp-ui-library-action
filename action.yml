@@ -8,8 +8,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-     - uses: actions/checkout@v1
-
      - name: Install UI-Library
        if: ${{  github.event_name  == 'push'}}
        run: |
